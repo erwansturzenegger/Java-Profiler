@@ -101,19 +101,26 @@
     text-align: left;
     border: none;
     border-bottom: 1px solid var(--border);
-    border-left: 3px solid transparent;
     border-radius: 0;
-    padding: 8px 10px 8px 9px;
+    padding: 9px 12px;
     background: transparent;
+    box-shadow: none;
+    min-height: 0;
+    font-weight: normal;
+    white-space: normal;
   }
 
   .req:hover {
     background: var(--panel-2);
   }
 
-  .req.selected {
+  .req.selected,
+  .req.selected:hover {
     background: var(--sel);
-    border-left-color: var(--accent);
+  }
+
+  .req.selected .method {
+    color: var(--accent-text);
   }
 
   .req.bg .uri {

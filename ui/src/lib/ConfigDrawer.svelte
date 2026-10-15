@@ -3,6 +3,7 @@
   import { TYPES, TYPE_LABEL, simple } from './model.js';
   import { to } from './router.svelte.js';
   import Link from './Link.svelte';
+  import Icon from './Icon.svelte';
 
   let { onclose } = $props();
   let query = $state('');
@@ -77,7 +78,7 @@
   <div class="top">
     <h2>Configuration</h2>
     <span class="muted small">Appliquée à chaud sur tous les agents (≤ 1 s)</span>
-    <button class="close" onclick={onclose} aria-label="Fermer">✕</button>
+    <button class="close ghost icon-btn" onclick={onclose} aria-label="Fermer" title="Fermer (Échap)"><Icon name="x" size={16} /></button>
   </div>
 
   {#if cfg}
@@ -115,7 +116,7 @@
       {#if !all}
         <div class="chips">
           {#each selected as e}
-            <span class="chip mono" title={e}>{e.includes('*') ? e : simple(e)}<button onclick={() => remove(e)} aria-label="Retirer {e}">✕</button></span>
+            <span class="chip mono" title={e}>{e.includes('*') ? e : simple(e)}<button onclick={() => remove(e)} title="Retirer" aria-label="Retirer {e}"><Icon name="x" size={11} /></button></span>
           {:else}
             <span class="muted small">Aucune entité : rien ne sera enregistré pour ces types.</span>
           {/each}
@@ -200,8 +201,9 @@
   .backdrop {
     position: fixed;
     inset: 0;
-    background: rgb(0 0 0 / 0.25);
+    background: var(--backdrop);
     z-index: 10;
+    animation: fade 160ms var(--ease);
   }
 
   .drawer {
@@ -214,18 +216,19 @@
     border-left: 1px solid var(--border);
     z-index: 11;
     overflow: auto;
-    padding: 0 18px 24px;
-    box-shadow: -8px 0 24px rgb(0 0 0 / 0.12);
+    padding: 0 20px 28px;
+    box-shadow: var(--shadow-pop);
+    animation: slide 220ms var(--ease);
   }
 
   .top {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 10px;
     position: sticky;
     top: 0;
     background: var(--panel);
-    padding: 14px 0 10px;
+    padding: 12px 0 11px;
     border-bottom: 1px solid var(--border);
     z-index: 1;
   }
@@ -233,18 +236,30 @@
   h2 {
     margin: 0;
     font-size: 16px;
+    font-weight: 650;
   }
 
   h3 {
     font-size: 13px;
-    margin: 18px 0 6px;
+    font-weight: 650;
+    margin: 22px 0 6px;
   }
 
   .close {
     margin-left: auto;
-    border: none;
-    background: none;
-    color: var(--muted);
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide {
+    from {
+      transform: translateX(24px);
+      opacity: 0.6;
+    }
   }
 
   .small {
@@ -284,6 +299,9 @@
   }
 
   .chip button {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     border: none;
     background: none;
     padding: 0 4px;
@@ -292,6 +310,9 @@
   }
 
   .link {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     border: none;
     background: none;
     color: var(--muted);
@@ -310,6 +331,9 @@
   }
 
   .pick li button {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     display: block;
     width: 100%;
     text-align: left;

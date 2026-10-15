@@ -6,6 +6,7 @@
   import Link from './Link.svelte';
   import TreeNode from './TreeNode.svelte';
   import Tags from './Tags.svelte';
+  import Icon from './Icon.svelte';
 
   let { node, depth, t0 } = $props();
   let open = $state(untrack(() => depth < 2));
@@ -27,9 +28,9 @@
 
 <div class="row" class:sel={store.selectedEvent === ev} style="padding-left: {8 + depth * 18}px">
   {#if hasChildren}
-    <button class="tw" onclick={() => (open = !open)} aria-label={open ? 'Replier' : 'Déplier'}>{open ? '▾' : '▸'}</button>
+    <button class="tw" onclick={() => (open = !open)} aria-label={open ? 'Replier' : 'Déplier'}><Icon name={open ? 'chevron-down' : 'chevron-right'} size={13} /></button>
   {:else if node.group}
-    <button class="tw" onclick={() => (groupOpen = !groupOpen)} aria-label="Détail">{groupOpen ? '▾' : '▸'}</button>
+    <button class="tw" onclick={() => (groupOpen = !groupOpen)} aria-label="Détail"><Icon name={groupOpen ? 'chevron-down' : 'chevron-right'} size={13} /></button>
   {:else}
     <span class="tw"></span>
   {/if}
@@ -100,6 +101,9 @@
   }
 
   .tw {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     width: 18px;
     flex: none;
     border: none;
@@ -110,6 +114,9 @@
   }
 
   .main {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     flex: 1;
     min-width: 0;
     display: flex;

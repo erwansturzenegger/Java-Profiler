@@ -5,6 +5,7 @@
   import { to } from './router.svelte.js';
   import Link from './Link.svelte';
   import Tags from './Tags.svelte';
+  import Icon from './Icon.svelte';
 
   let { event, onclose } = $props();
   let showAll = $state(false);
@@ -90,7 +91,7 @@
   <div class="top">
     <span class="badge t-{event.type}">{TYPE_LABEL[event.type] || event.type}</span>
     <span class="faint mono id">{event.id}</span>
-    <button class="close" onclick={onclose} aria-label="Fermer">✕</button>
+    <button class="close ghost icon-btn" onclick={onclose} aria-label="Fermer" title="Fermer (Échap)"><Icon name="x" size={16} /></button>
   </div>
 
   {#if event.error}
@@ -102,9 +103,9 @@
       <Link to={to.entity(ref.entity, ref.eid)} class="btn" title="Cycle de vie : état de l'instance après chaque opération">
         Cycle de vie de <span class="mono">{simple(ref.entity)}#{ref.eid}</span>
       </Link>
-      <Link to={to.entity(ref.entity, ref.eid)} newTab class="btn icon" title="Ouvrir dans un nouvel onglet">↗</Link>
+      <Link to={to.entity(ref.entity, ref.eid)} newTab class="btn icon" title="Ouvrir dans un nouvel onglet"><Icon name="external" size={13} label="Nouvel onglet" /></Link>
       <Link to={to.type(ref.entity)} class="btn" title="Tous les ids de ce type">Type <span class="mono">{simple(ref.entity)}</span></Link>
-      <Link to={to.type(ref.entity)} newTab class="btn icon" title="Ouvrir dans un nouvel onglet">↗</Link>
+      <Link to={to.type(ref.entity)} newTab class="btn icon" title="Ouvrir dans un nouvel onglet"><Icon name="external" size={13} label="Nouvel onglet" /></Link>
       <Link to={to.timeline({ entity: ref.entity, id: ref.eid, ev: event.id })} class="btn" title="Toutes les étapes de cette entité, tous threads et requêtes confondus, et l'origine de chaque état">Chronologie de l'entité</Link>
     </div>
   {/if}
@@ -188,12 +189,20 @@
   }
 
   .refs :global(a.btn) {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 26px;
     text-decoration: none;
     color: inherit;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 3px 8px;
+    background: var(--panel);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r);
+    padding: 0 9px;
     font-size: 12px;
+    font-weight: 500;
+    box-shadow: var(--shadow-1);
+    transition: background-color 120ms var(--ease);
   }
 
   .refs :global(a.btn:hover) {
@@ -246,9 +255,6 @@
 
   .close {
     margin-left: auto;
-    border: none;
-    background: none;
-    color: var(--muted);
   }
 
   .error {

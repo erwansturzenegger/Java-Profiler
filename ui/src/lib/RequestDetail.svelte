@@ -406,6 +406,9 @@
   }
 
   .tabs button {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     border: none;
     border-bottom: 2px solid transparent;
     border-radius: 0;
@@ -518,6 +521,7 @@
   }
 
   .chips .badge {
+    min-height: 0;
     border: none;
     cursor: pointer;
     padding: 4px 7px;

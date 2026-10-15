@@ -3,6 +3,7 @@
   import { store } from './store.svelte.js';
   import { to } from './router.svelte.js';
   import Link from './Link.svelte';
+  import Icon from './Icon.svelte';
 
   let { onclose } = $props();
   let host = $state('');
@@ -72,7 +73,7 @@
   <div class="top">
     <h2>JVM et agents</h2>
     <span class="muted small">Attachement à chaud, sans redémarrage</span>
-    <button class="close" onclick={onclose} aria-label="Fermer">✕</button>
+    <button class="close ghost icon-btn" onclick={onclose} aria-label="Fermer" title="Fermer (Échap)"><Icon name="x" size={16} /></button>
   </div>
 
   <section>
@@ -175,8 +176,9 @@
   .backdrop {
     position: fixed;
     inset: 0;
-    background: rgb(0 0 0 / 0.25);
+    background: var(--backdrop);
     z-index: 10;
+    animation: fade 160ms var(--ease);
   }
 
   .drawer {
@@ -189,18 +191,19 @@
     border-left: 1px solid var(--border);
     z-index: 11;
     overflow: auto;
-    padding: 0 18px 24px;
-    box-shadow: -8px 0 24px rgb(0 0 0 / 0.12);
+    padding: 0 20px 28px;
+    box-shadow: var(--shadow-pop);
+    animation: slide 220ms var(--ease);
   }
 
   .top {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 10px;
     position: sticky;
     top: 0;
     background: var(--panel);
-    padding: 14px 0 10px;
+    padding: 12px 0 11px;
     border-bottom: 1px solid var(--border);
     z-index: 1;
   }
@@ -208,11 +211,13 @@
   h2 {
     margin: 0;
     font-size: 16px;
+    font-weight: 650;
   }
 
   h3 {
     font-size: 13px;
-    margin: 18px 0 6px;
+    font-weight: 650;
+    margin: 22px 0 6px;
   }
 
   .head {
@@ -223,9 +228,19 @@
 
   .close {
     margin-left: auto;
-    border: none;
-    background: none;
-    color: var(--muted);
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide {
+    from {
+      transform: translateX(24px);
+      opacity: 0.6;
+    }
   }
 
   .small {
@@ -244,6 +259,9 @@
   }
 
   .link {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     border: none;
     background: none;
     color: var(--muted);

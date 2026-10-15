@@ -729,6 +729,9 @@
   }
 
   .link {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     border: none;
     background: none;
     color: var(--muted);

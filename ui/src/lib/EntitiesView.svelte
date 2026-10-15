@@ -4,6 +4,7 @@
   import { remote } from './remote.svelte.js';
   import Link from './Link.svelte';
   import Loading from './Loading.svelte';
+  import Icon from './Icon.svelte';
 
   let filter = $state('');
   // Compteurs tenus à jour par le serveur : instantané quel que soit le volume
@@ -21,8 +22,8 @@
     <input type="search" placeholder="Filtrer un type…" bind:value={filter} />
   </div>
   <p class="muted small">
-    Toutes requêtes confondues. <b class="lazy">Load lazy</b> : chargement implicite (getter, itération) ; <b>Load voulus</b> : requête, find,
-    find, refresh, initialize… Ctrl+clic ou ↗ pour ouvrir dans un nouvel onglet.
+    Toutes requêtes confondues. <b class="lazy">Load lazy</b> : chargement implicite (getter, itération) ; <b>Load voulus</b> : requête,
+    find, refresh, initialize… Ctrl+clic pour ouvrir dans un nouvel onglet.
   </p>
   <table class="grid">
     <thead>
@@ -53,7 +54,7 @@
           <td class="num">{x.SESSION || ''}</td>
           <td class="num err">{x.LAZY_ERROR || ''}</td>
           <td class="num">{x.time ? fmtMs(x.time) : ''}</td>
-          <td><Link to={to.type(x.entity)} newTab title="Ouvrir dans un nouvel onglet">↗</Link></td>
+          <td><Link to={to.type(x.entity)} newTab class="ext" title="Ouvrir dans un nouvel onglet"><Icon name="external" size={13} label="Nouvel onglet" /></Link></td>
         </tr>
       {:else}
         <tr><td colspan="11" class="muted">{res.data ? "Aucune entité dans l'historique." : 'Chargement…'}</td></tr>

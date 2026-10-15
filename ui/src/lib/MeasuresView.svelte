@@ -5,6 +5,7 @@
   import Link from './Link.svelte';
   import Tags from './Tags.svelte';
   import Loading from './Loading.svelte';
+  import Icon from './Icon.svelte';
 
   const tag = $derived(router.route.tag || null);
   // Agrégé par le serveur ; un tag sélectionné restreint les méthodes aux événements qui le portent (propre ou hérité)
@@ -21,7 +22,7 @@
       {#if tag}<Link to={to.measures()}>Mesures</Link> › <span class="tag">#{tag}</span>{:else}Mesures{/if}
       <Loading {res} />
     </h1>
-    <Link to={to.profiles()} class="small muted">Configurer les sondes et les tags →</Link>
+    <Link to={to.profiles()} class="small muted">Configurer les sondes et les tags <Icon name="arrow-right" size={12} /></Link>
   </div>
   <p class="muted small">
     Les tags viennent des sondes (profils) et des règles de tags du serveur. Un tag « propagé » marque aussi tout ce qui s'exécute
@@ -61,7 +62,7 @@
           <td class="num">{t.spans ? fmtMs(t.p95) : ''}</td>
           <td class="num">{t.spans ? fmtMs(t.max) : ''}</td>
           <td class="num err">{t.errors || ''}</td>
-          <td><Link to={to.measures(t.tag)} newTab title="Ouvrir dans un nouvel onglet">↗</Link></td>
+          <td><Link to={to.measures(t.tag)} newTab class="ext" title="Ouvrir dans un nouvel onglet"><Icon name="external" size={13} label="Nouvel onglet" /></Link></td>
         </tr>
       {:else}
         <tr><td colspan="12" class="muted">{res.data ? 'Aucun événement tagué. Ajoutez des tags aux sondes ou des règles de tags dans un profil.' : 'Chargement…'}</td></tr>

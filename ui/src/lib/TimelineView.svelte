@@ -11,6 +11,7 @@
   import Loading from './Loading.svelte';
   import Tags from './Tags.svelte';
   import EventPanel from './EventPanel.svelte';
+  import Icon from './Icon.svelte';
 
   // Chronologie de tous les événements (ou d'une entité), toutes requêtes et tous threads confondus, à la ms.
   // Les événements d'une même ms sont dans l'ordre d'émission de la JVM (compteur des ids de l'agent).
@@ -188,7 +189,7 @@
       <div class="line small muted">
         {#if lifeMode}
           <span>{rows.length} étapes · {hist?.instances || 0} instance(s) Java · {hist?.sessions || 0} session(s) · {threads} thread(s) · {reqCount} requête(s)</span>
-          <Link to={to.entity(entity, eid)}>Cycle de vie (tableau) →</Link>
+          <Link to={to.entity(entity, eid)}>Cycle de vie (tableau) <Icon name="arrow-right" size={12} /></Link>
           {#if life.data?.truncated}<span class="warn">entité très sollicitée : seuls ses événements les plus récents sont analysés</span>{/if}
         {:else}
           <span>
@@ -196,10 +197,10 @@
             · {threads} thread(s) · {reqCount} requête(s)
           </span>
           <span class="pager">
-            <button disabled={!page.data?.hasOlder} onclick={() => patch({ before: page.data.first, after: null, at: null }, false)}>← Plus anciens</button>
-            <button disabled={!page.data?.hasNewer} onclick={() => patch({ after: page.data.last, before: null, at: null }, false)}>Plus récents →</button>
-            <button disabled={!cursor} onclick={() => patch({ before: null, after: null, at: null }, false)} title="Derniers événements, suivis en direct">Derniers</button>
-            {#if !cursor}<span class="live">● en direct</span>{/if}
+            <button disabled={!page.data?.hasOlder} onclick={() => patch({ before: page.data.first, after: null, at: null }, false)}><Icon name="arrow-left" />Plus anciens</button>
+            <button disabled={!page.data?.hasNewer} onclick={() => patch({ after: page.data.last, before: null, at: null }, false)}>Plus récents<Icon name="arrow-right" /></button>
+            <button disabled={!cursor} onclick={() => patch({ before: null, after: null, at: null }, false)} title="Derniers événements, suivis en direct"><Icon name="skip-forward" />Derniers</button>
+            {#if !cursor}<span class="live"><span class="live-dot"></span>en direct</span>{/if}
           </span>
         {/if}
       </div>
@@ -230,7 +231,7 @@
           {#if !prev || day(prev.t) !== day(e.t)}
             <tr class="sep day"><td colspan={cols}>{fmtDate(e.t)}</td></tr>
           {:else if d > GAP}
-            <tr class="sep gap"><td colspan={cols}>⋯ {fmtMs(d)} plus tard</td></tr>
+            <tr class="sep gap"><td colspan={cols}><Icon name="clock" size={12} /> {fmtMs(d)} plus tard</td></tr>
           {/if}
           <tr
             id="tl-{i}"
@@ -247,7 +248,7 @@
               {#if !st?.returned && e.thread}
                 {@const switched = prev && prev.thread !== e.thread}
                 <span class="chip mono" style="--h: {hueOf(e.thread)}" class:switched title={switched ? `Changement de thread (avant : ${prev.thread})` : e.thread}>
-                  {#if switched}⇄ {/if}{e.thread}
+                  {#if switched}<Icon name="switch" size={11} />{/if}{e.thread}
                 </span>
               {/if}
             </td>
@@ -255,13 +256,13 @@
               {#if !st?.returned}
                 {@const changed = !prev || rows[i - 1].req.key !== r.req.key}
                 <Link to={to.event(r.req.key, e.id)} class="mono small {changed ? '' : 'same'}" title="{reqLabel(r.req)} — ouvrir l'événement dans sa requête">
-                  {changed ? reqLabel(r.req) : '〃'}
+                  {#if changed}{reqLabel(r.req)}{:else}<span class="same" aria-label="même requête"></span>{/if}
                 </Link>
               {/if}
             </td>
             <td class="what">
               {#if st?.returned}
-                <span class="muted small">↳ instance retournée</span>
+                <span class="muted small"><Icon name="corner-down-right" size={12} /> instance retournée</span>
               {:else}
                 <span class="badge t-{e.type.startsWith('REQ') ? 'REQ' : e.type}">{e.type === 'REQ_START' ? 'DÉBUT' : e.type === 'REQ_END' ? 'FIN' : e.type}</span>
                 <span class="mono small">{lifeMode ? operation(e) : e.type.startsWith('REQ') ? reqLabel(r.req) : subject(e)}</span>
@@ -274,7 +275,7 @@
             {#if lifeMode}
               <td>
                 {#if st.i}<span class="chip mono" style="--h: {hue(st.i)}" title={e.inst ? '@' + e.inst : ''}>{st.i}</span>{/if}
-                {#if st.r}<span class="faint">→</span><span class="chip mono" style="--h: {hue(st.r)}">{st.r}</span>{/if}
+                {#if st.r}<span class="faint"><Icon name="arrow-right" size={11} /></span><span class="chip mono" style="--h: {hue(st.r)}">{st.r}</span>{/if}
               </td>
               <td class="small state">
                 {#if a}<span class="att {a.cls}" class:changed={st.attChanged}>{a.text}</span>{/if}
@@ -305,7 +306,7 @@
       <button class="more small" onclick={() => (rowLimit += ROW_PAGE)}>Afficher {Math.min(ROW_PAGE, rows.length - rowLimit)} lignes de plus (sur {rows.length - rowLimit})</button>
     {/if}
     {#if !lifeMode && page.data?.hasNewer && cursor}
-      <button class="more small" onclick={() => patch({ after: page.data.last, before: null, at: null }, false)}>Plus récents →</button>
+      <button class="more small" onclick={() => patch({ after: page.data.last, before: null, at: null }, false)}>Plus récents<Icon name="arrow-right" /></button>
     {/if}
   </div>
 
@@ -341,7 +342,7 @@
                     <span class="badge t-{t.step.e.type}">{t.step.e.type}</span>
                     <span class="mono">{operation(t.step.e)}</span>
                   </button>
-                  {#if sw}<span class="other" title="Autre thread ou autre requête que l'étape sélectionnée">⇄ {t.step.e.thread} · {reqLabel(t.step.req)}</span>{/if}
+                  {#if sw}<span class="other" title="Autre thread ou autre requête que l'étape sélectionnée"><Icon name="switch" size={11} /> {t.step.e.thread} · {reqLabel(t.step.req)}</span>{/if}
                   {#if t.what.length}<div class="faint">{t.what.join(' · ')}</div>{/if}
                   <div class="mono faint">{shortFrame(t.step.e.caller)}</div>
                 </li>
@@ -369,7 +370,7 @@
     </div>
     <div class="small mono where-o" title={e.caller}>{e.el ? e.el + ' · ' : ''}{shortFrame(e.caller)}</div>
     <div class="small" class:other>
-      {other ? '⇄ ' : ''}thread <span class="mono">{e.thread || '?'}</span> · <Link to={to.event(step.req.key, e.id)} class="mono">{reqLabel(step.req)}</Link>
+      {#if other}<Icon name="switch" size={11} /> {/if}thread <span class="mono">{e.thread || '?'}</span> · <Link to={to.event(step.req.key, e.id)} class="mono">{reqLabel(step.req)}</Link>
     </div>
     {#if !established}<div class="small faint">L'opération qui a produit cet état n'a pas été capturée (type désactivé, sonde absente ou antérieure à l'enregistrement).</div>{/if}
   </li>
@@ -384,7 +385,7 @@
   }
 
   .page.with-panel {
-    grid-template-columns: 1fr minmax(340px, 38%);
+    grid-template-columns: 1fr minmax(340px, 32%);
   }
 
   .main {
@@ -465,6 +466,7 @@
   }
 
   .chips .badge {
+    min-height: 0;
     border: none;
     cursor: pointer;
     padding: 4px 7px;
@@ -482,7 +484,34 @@
   }
 
   .live {
-    color: var(--t-util);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ok);
+    font-weight: 500;
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 20%, transparent);
+  }
+
+  /* Même requête que la ligne précédente : un filet de continuité au lieu de répéter le libellé */
+  .same {
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    margin-left: 8px;
+    vertical-align: middle;
+    background: var(--border-strong);
+  }
+
+  .chip :global(.icon) {
+    margin-right: 3px;
+    vertical-align: -0.1em;
   }
 
   .warn {
@@ -563,7 +592,7 @@
 
   .req :global(a) {
     display: inline-block;
-    max-width: 220px;
+    max-width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -575,11 +604,7 @@
   }
 
   .what {
-    max-width: 38vw;
-  }
-
-  .what .mono {
-    word-break: break-all;
+    white-space: nowrap;
   }
 
   .where {
@@ -690,6 +715,9 @@
   }
 
   .linklike {
+    min-height: 0;
+    box-shadow: none;
+    font-weight: inherit;
     background: none;
     border: none;
     padding: 0;

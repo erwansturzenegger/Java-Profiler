@@ -5,6 +5,7 @@
   import Link from './Link.svelte';
   import Loading from './Loading.svelte';
   import FocusButton from './FocusButton.svelte';
+  import Icon from './Icon.svelte';
 
   let allAccess = $state(false);
   let allColumns = $state(false);
@@ -61,7 +62,7 @@
   </div>
 
   <h1 class="mono">{simple(entity)}<span class="faint">#</span>{eid} <Loading {res} /><FocusButton {entity} id={eid} /></h1>
-  <p class="small"><Link to={to.timeline({ entity, id: eid })}>Chronologie de l'entité : threads, requêtes et origine de chaque état →</Link></p>
+  <p class="small"><Link to={to.timeline({ entity, id: eid })}>Chronologie de l'entité : threads, requêtes et origine de chaque état <Icon name="arrow-right" size={12} /></Link></p>
   <div class="meta small muted">
     <span>{h.rows.length} événements</span>
     <span>{h.instances} instance{h.instances > 1 ? 's' : ''} Java</span>
@@ -138,7 +139,7 @@
               <td class="sticky c0 mono faint small">{st.returned ? '' : fmtTime(e.t)}</td>
               <td class="sticky c1">
                 {#if st.returned}
-                  <span class="muted small">↳ instance retournée</span>
+                  <span class="muted small"><Icon name="corner-down-right" size={12} /> instance retournée</span>
                 {:else}
                   <Link to={to.event(st.req.key, e.id)} title="Ouvrir l'événement dans sa requête">
                     <span class="badge t-{e.type}">{e.type}</span>
@@ -154,7 +155,7 @@
               </td>
               <td>
                 {#if st.i}<span class="chip mono" style="--h: {hue(st.i)}" title={e.inst ? '@' + e.inst : ''}>{st.i}</span>{/if}
-                {#if st.r}<span class="faint">→</span><span class="chip mono" style="--h: {hue(st.r)}">{st.r}</span>{/if}
+                {#if st.r}<span class="faint"><Icon name="arrow-right" size={11} /></span><span class="chip mono" style="--h: {hue(st.r)}">{st.r}</span>{/if}
               </td>
               <td class="small">
                 {#if a}<span class="att {a.cls}" class:changed={st.attChanged}>{a.text}</span>

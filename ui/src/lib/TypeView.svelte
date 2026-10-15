@@ -5,6 +5,7 @@
   import Link from './Link.svelte';
   import Loading from './Loading.svelte';
   import FocusButton from './FocusButton.svelte';
+  import Icon from './Icon.svelte';
 
   let filter = $state('');
   let applied = $state('');
@@ -70,7 +71,7 @@
               <td class="num">{x.sessions || ''}</td>
               <td class="num">{x.reqs}</td>
               <td class="num faint">{fmtTime(x.last)}</td>
-              <td><Link to={to.entity(entity, x.eid)} newTab title="Ouvrir dans un nouvel onglet">↗</Link></td>
+              <td><Link to={to.entity(entity, x.eid)} newTab class="ext" title="Ouvrir dans un nouvel onglet"><Icon name="external" size={13} label="Nouvel onglet" /></Link></td>
             </tr>
           {:else}
             <tr><td colspan="11" class="muted">{res.data ? 'Aucun id.' : 'Chargement…'}</td></tr>
