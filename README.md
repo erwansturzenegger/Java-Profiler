@@ -43,7 +43,7 @@ Le bouton **JVM…** de l'en-tête liste les JVM locales du serveur (même utili
 
 Pour développer l'UI : `npm run dev` dans `ui/` (port 5173, l'API est proxifiée vers 7070).
 
-Pour voir l'UI sans agent : bouton Importer, puis `docs/sample-events.json` (application de démonstration : `demo.Patient`, `demo.Stay`, plusieurs threads).
+Pour voir l'UI sans agent : bouton Importer, puis `docs/sample-events.json` (application de démonstration : `demo.Customer`, `demo.Order`, plusieurs threads).
 
 ### Stockage et volumes
 
@@ -88,14 +88,14 @@ Profils fournis :
 - **Quels agents** : un agent reçoit les sondes des profils actifs dont `appliesTo` (globs) correspond à son nom, ou exactement ceux qu'il demande (`profiles=hibernate,web` dans ses arguments, ou cases cochées à l'attachement).
 - **Sonde** : `handler` (par défaut `method`) et critères de classes combinés en ET : `class` (FQCN ou glob), `extends` (classe ou interface, sous-types inclus), `annotated`, `concrete`. Critères de méthodes : `methods` (globs, `<init>` pour les constructeurs), `args`, `minArgs`, `params` (un type par argument, `a|b`, `*`), `public`, `static`, `nonVoid`. La page Profils affiche, par sonde, le nombre de classes réellement instrumentées : 0 signale une sonde qui ne correspond à rien.
 - **Handlers** : `method` (mesure générique : durée, arguments, retour, entité ciblée et son état après) ; et les handlers techniques `post-load`, `proxy-init`, `collection-init`, `session`, `query`, `lazy-collection`, `lazy-exception`, `sql`, `http-request`, `el`, `getter`. Ces derniers interprètent les objets reçus (événement Hibernate, requête servlet…) : on peut changer leurs classes cibles (autre version d'Hibernate…) sans toucher à l'agent.
-- **Rôle** d'une sonde `method` : `measure` (défaut) est transparente pour la cause des chargements ; `load` rend « voulus » les chargements qu'elle déclenche (reload, find, initialize…).
+- **Rôle** d'une sonde `method` : `measure` (défaut) est transparente pour la cause des chargements ; `load` rend « voulus » les chargements qu'elle déclenche (findById, initialize…).
 - **Tags** : `tags` sur une sonde marque ses événements ; avec `propagate`, tout ce qui s'exécute pendant l'appel (LOAD, SQL, autres méthodes…) hérite du tag (affiché en pointillé). Les **règles de tags** (`tagRules`) sont appliquées par le serveur à la réception et recalculées sur l'historique à chaque modification : critères `types`, `entity`, `prop`, `caller`, `probe` (globs), `text` (contenu du détail), `cause` (`lazy`, `init`, `explicit`, `query`), `minDur` (ms), `error`.
 - **Réglages** (`settings`) : `callerPackages`, `callerExclude`, `accessExclude`, `libraryPackages`, ajoutés à ceux de la configuration pour les agents du profil.
 - **Identifiant des entités** (`settings.entityIds`) : où l'agent lit l'id d'une instance. Exemple :
 
   ```json
   "entityIds": [
-    { "extends": ["com.acme.framework.BaseEntity"], "id": "id" },
+    { "extends": ["com.acme.model.AbstractEntity"], "id": "id" },
     { "class": ["com.acme.legacy.*"], "id": "getPk()" }
   ]
   ```
@@ -124,22 +124,22 @@ La page **Mesures** (`?view=measures`) agrège par tag (événements, requêtes,
 Chaque événement porte aussi les informations suivantes :
 
 - caller : premier frame métier : dans les packages applicatifs (configuration + profils), hors exclusions. Sans package applicatif, premier frame qui n'est pas une bibliothèque (`libraryPackages`).
-- trigger : la méthode appelée juste avant, par exemple `EntityUtils.initialize`, `PersistentSet.iterator` ou `Doctor(proxy).getName`.
+- trigger : la méthode appelée juste avant, par exemple `Hibernate.initialize`, `PersistentSet.iterator` ou `Seller(proxy).getName`.
 - `tags` (sonde), `rtags` (règles du serveur), `scope` (tags hérités d'un span englobant).
-- l'expression EL en cours (`#{bean.patient.stays}`).
+- l'expression EL en cours (`#{bean.customer.orders}`).
 - la phase JSF.
 - la pile.
 
 Les événements d'entité portent aussi :
 
-- l'entité et son id. Pour UTIL, c'est la cible (`tentity`/`teid`) : `this` pour `patient.reload()`, sinon le premier argument entité, proxy ou collection (liste des ids pour une collection) ;
+- l'entité et son id. Pour UTIL, c'est la cible (`tentity`/`teid`) : `this` pour `customer.refetch()`, sinon le premier argument entité, proxy ou collection (liste des ids pour une collection) ;
 - `inst` : l'identité JVM de l'instance (propriétaire pour COLLECTION, implémentation derrière le proxy pour PROXY) ;
-- `rinst` : l'instance renvoyée par un UTIL (`reload`…) ou un `merge`, quand ce n'est pas celle passée ;
+- `rinst` : l'instance renvoyée par un UTIL (`findById`…) ou un `merge`, quand ce n'est pas celle passée ;
 - `sess` : l'identité de la session Hibernate (LOAD, PROXY, COLLECTION, SESSION) ;
 - `cause` (LOAD, PROXY, COLLECTION) : **pourquoi ce chargement**, déduit des opérations englobantes :
   - `lazy` : chargement lazy implicite (getter, itération d'une collection), sans demande explicite au-dessus ;
-  - `init` : initialisation lazy demandée par une sonde de rôle `load` (`EntityUtils.initialize`…) ou une opération de session ;
-  - `explicit` : chargement voulu (sonde de rôle `load` : `reload`, `findByIds`… ; `session.find/get/refresh/merge`) ;
+  - `init` : initialisation lazy demandée par une sonde de rôle `load` (`Hibernate.initialize`…) ou une opération de session ;
+  - `explicit` : chargement voulu (sonde de rôle `load` : `findById`, `findAll`… ; `session.find/get/refresh/merge`) ;
   - `query` : hydraté par une requête (texte de la requête en détail) ;
 - `snap` / `rsnap` : **état de l'instance après l'opération**, lu sur les champs (aucun chargement déclenché) : attachée ou détachée de sa session, et pour chaque association : chargée (taille), lazy, proxy non initialisé, null. Désactivable dans la configuration (« Instantanés d'état »).
 
@@ -151,14 +151,14 @@ L'état de l'interface est dans l'URL : les boutons précédent / suivant du nav
 |---|---|
 | `?req=<clé>&tab=tree&ev=<id>` | Une requête, son onglet et l'événement sélectionné |
 | `?view=entities` | Types d'entités : ids, LOAD lazy / voulus, initialisations, exceptions |
-| `?entity=com.acme.Patient` | Un type : ses ids (instances multiples, lazy, exceptions) et ses propriétés |
-| `?entity=com.acme.Patient&id=12` | **Cycle de vie** d'une entité |
+| `?entity=com.acme.Customer` | Un type : ses ids (instances multiples, lazy, exceptions) et ses propriétés |
+| `?entity=com.acme.Customer&id=12` | **Cycle de vie** d'une entité |
 | `?view=measures&tag=batch` | Mesures par tag et par méthode sondée |
 | `?view=profiles&profile=hibernate` | Profils : sondes, règles de tags, réglages |
 | `?view=timeline` | **Chronologie** de tous les événements (filtres `types`, `q`, `agent` ; position `at`, `before`, `after`) |
-| `?view=timeline&entity=com.acme.Patient&id=12&ev=<id>` | Chronologie d'une entité et origine de son état à l'événement `ev` |
+| `?view=timeline&entity=com.acme.Customer&id=12&ev=<id>` | Chronologie d'une entité et origine de son état à l'événement `ev` |
 
-Le cycle de vie liste chaque opération sur l'entité, toutes requêtes confondues : chargement (avec sa cause), initialisation, util, find / refresh / merge / evict / clear, accès lazy, exception. Pour chaque étape, il montre l'instance Java (i1, i2…), son attachement à la session (S1, S2…) et l'état de chaque association **après** l'opération, en mettant en évidence ce qui a changé. Il explique les ruptures : nouvelle instance (reload, merge, rechargement dans une autre session), refresh, détachement avant une `LazyInitializationException`.
+Le cycle de vie liste chaque opération sur l'entité, toutes requêtes confondues : chargement (avec sa cause), initialisation, util, find / refresh / merge / evict / clear, accès lazy, exception. Pour chaque étape, il montre l'instance Java (i1, i2…), son attachement à la session (S1, S2…) et l'état de chaque association **après** l'opération, en mettant en évidence ce qui a changé. Il explique les ruptures : nouvelle instance (findById, merge, rechargement dans une autre session), refresh, détachement avant une `LazyInitializationException`.
 
 La **chronologie** affiche les événements triés par heure, toutes requêtes et tous threads confondus. Chaque ligne donne l'heure à la ms (date en séparateur), le temps écoulé depuis la ligne précédente, le thread (⇄ quand il change), la requête et l'emplacement dans le code. Au sein d'une même milliseconde, l'ordre est celui d'émission dans la JVM (compteur des ids de l'agent) ; un span est placé à son début et la fin d'une requête à son heure de fin. Sans position, la dernière page est suivie en direct ; « Aller à » saute à une date et heure précises.
 
@@ -170,7 +170,7 @@ Centrée sur une entité (type + id), elle ajoute l'instance Java, l'état aprè
 
 Un `clear()` ou un `close()` de sa session est attribué à l'instance même s'il vient d'un autre thread. Le panneau liste aussi tous les changements de l'instance jusqu'à cette étape.
 
-Chaque événement est rattaché à sa requête HTTP, avec le composant JSF source pour l'ajax PrimeFaces, et à son span parent. Exemple d'arborescence : UTIL `EntityUtils.initialize` → COLLECTION `Patient.stays` → SQL + LOAD ×n.
+Chaque événement est rattaché à sa requête HTTP, avec le composant JSF source pour l'ajax PrimeFaces, et à son span parent. Exemple d'arborescence : UTIL `Hibernate.initialize` → COLLECTION `Customer.orders` → SQL + LOAD ×n.
 
 Un accès à une entité ou une collection non initialisée apparaît donc toujours :
 
@@ -179,7 +179,7 @@ Un accès à une entité ou une collection non initialisée apparaît donc toujo
 
 ## Configuration dynamique (UI, appliquée en moins d'1 s, sans redémarrage)
 
-- Entités : FQCN, nom simple (`Patient`) ou glob (`com.acme.model.stay.*`), sous-classes incluses. `*` sélectionne tout. L'UI propose la liste des entités connues des agents.
+- Entités : FQCN, nom simple (`Customer`) ou glob (`com.acme.model.order.*`), sous-classes incluses. `*` sélectionne tout. L'UI propose la liste des entités connues des agents.
 - Types d'événements activés. ACCESS est désactivé par défaut car très volumineux : activez-le une fois la liste d'entités restreinte.
 - Packages appelants, exclusions, bibliothèques, propriétés ignorées, piles pour ACCESS/LOAD. Valables pour tous les agents ; les profils y ajoutent leurs propres valeurs.
 
@@ -225,7 +225,7 @@ Séparés par `;`, ou dans un fichier : `config=/chemin/profiler.properties`. Se
 ## Limites et points à vérifier
 
 - Validé ici contre un banc de test qui reproduit les classes Hibernate 6, Servlet, EL et Mojarra ciblées, avec les mêmes noms et signatures. Il n'a pas été testé contre un vrai Hibernate, faute d'accès à Maven Central dans mon environnement. Au premier lancement, lancez avec `debug=true` et vérifiez que `AbstractLazyInitializer`, `DefaultInitializeCollectionEventListener`, `DefaultPostLoadEventListener` et `ResultSetReturnImpl` apparaissent bien comme transformées.
-- Les accès faits par réflexion sur les champs, que `RelationDefinition.getValue` ou `EntityIntrospector` font probablement, ne passent pas par les getters : pas d'ACCESS pour ceux-là. Les chargements lazy qu'ils provoquent restent visibles en PROXY ou COLLECTION.
+- Les accès faits par réflexion sur les champs (introspection, mappers génériques…) ne passent pas par les getters : pas d'ACCESS pour ceux-là. Les chargements lazy qu'ils provoquent restent visibles en PROXY ou COLLECTION.
 - Si `UninitializedSet` lève une autre exception que `LazyInitializationException`, ajoutez-la à la sonde `hibernate/lazy-exception` (`extends`).
 - Une sonde trop large (`class: ["*"]`) instrumente des milliers de classes : vérifiez le compteur de classes dans la page Profils.
 - Les handlers stockés dans `System.getProperties()` ne sont pas des `String`. Un code qui ferait `System.getProperties().store(...)` lèverait une `ClassCastException` (rare).

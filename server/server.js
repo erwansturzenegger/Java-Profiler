@@ -52,7 +52,7 @@ const JAVA = process.env.JAVA || (process.env.JAVA_HOME ? path.join(process.env.
 
 const DEFAULT_CONFIG = {
   recording: true,
-  // '*' = toutes ; FQCN, nom simple (Patient) ou glob (com.acme.model.patient.*)
+  // '*' = toutes ; FQCN, nom simple (Customer) ou glob (com.acme.model.customer.*)
   entities: ['*'],
   // Mode focus { entity, id, access } : remplace entities / types, une seule entité suivie (voir RuntimeConfig.focus)
   focus: null,

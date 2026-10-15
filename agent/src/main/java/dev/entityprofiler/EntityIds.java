@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * Lecture de l'identifiant d'une instance d'entité, selon les règles des profils ({@code settings.entityIds}) :
  * <pre>
  * "entityIds": [
- *   { "extends": "com.acme.framework.EntityBase", "id": "pk" },        champ (lu directement : rien n'est déclenché)
+ *   { "extends": "com.acme.model.AbstractEntity", "id": "pk" },        champ (lu directement : rien n'est déclenché)
  *   { "class": ["com.acme.legacy.*"], "id": "getIdentifiant()" }       méthode sans argument
  * ]
  * </pre>

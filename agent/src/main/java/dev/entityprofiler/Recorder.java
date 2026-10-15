@@ -357,7 +357,7 @@ final class Recorder {
                 ev.propagate = probe.propagate && ev.tags != null;
             }
             Object[] arr = (Object[]) args;
-            // Entité ciblée : this (patient.reload()...), sinon le premier argument entité / proxy / collection
+            // Entité ciblée : this (customer.refetch()...), sinon le premier argument entité / proxy / collection
             Object targetObj = sig[3];
             String[] target = Reflect.entityRef(targetObj);
             for (int i = 0; target == null && arr != null && i < arr.length; i++)
@@ -856,7 +856,7 @@ final class Recorder {
     /** Instantané de la cible (et de l'instance retournée si c'en est une autre) après l'exécution. */
     private static void afterTarget(RuntimeConfig rc, Event ev, Span s, Object result) {
         if (s.target != null) {
-            // Proxy non initialisé à l'entrée, initialisé par la méthode (Utils.initialize...) : instance réelle
+            // Proxy non initialisé à l'entrée, initialisé par la méthode (Hibernate.initialize...) : instance réelle
             String[] now = Reflect.entityRef(s.target);
             if (now != null && now[2] != null && ev.inst != null && ev.inst.startsWith("p") && !now[2].startsWith("p"))
                 ev.inst = now[2];
@@ -867,7 +867,7 @@ final class Recorder {
             ev.rsnap = Reflect.snapshot(result, s.session);
     }
 
-    /** Instance retournée (reload, merge...) : signalée si ce n'est pas l'instance ciblée. */
+    /** Instance retournée (findById, merge...) : signalée si ce n'est pas l'instance ciblée. */
     private static void returned(Event ev, Object result) {
         String[] ref = Reflect.entityRef(result);
         if (ref == null)
@@ -1064,7 +1064,7 @@ final class Recorder {
         return simple + "." + e.getMethodName();
     }
 
-    /** Patient$HibernateProxy$xyz.getName -> name */
+    /** Customer$HibernateProxy$xyz.getName -> name */
     private static String propertyFromProxyTrigger(String triggerFrame) {
         if (triggerFrame == null || !triggerFrame.contains("$HibernateProxy"))
             return null;

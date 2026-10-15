@@ -370,7 +370,7 @@
                               Rôle
                               <select value={p.role || 'measure'} onchange={(e) => (p.role = e.target.value)}>
                                 <option value="measure">mesure (transparente pour la cause des chargements)</option>
-                                <option value="load">chargement voulu (reload, find, initialize…)</option>
+                                <option value="load">chargement voulu (findById, initialize…)</option>
                               </select>
                             </label>
                           </div>
@@ -439,7 +439,7 @@
             {#each draft.settings?.entityIds || [] as r, i (i)}
               <tr>
                 <td><input type="text" class="mono" value={csv(r.class)} onchange={(e) => setOpt(r, 'class', list(e.target.value))} placeholder="com.acme.model.*" /></td>
-                <td><input type="text" class="mono" value={csv(r.extends)} onchange={(e) => setOpt(r, 'extends', list(e.target.value))} placeholder="com.acme.framework.EntityBase" /></td>
+                <td><input type="text" class="mono" value={csv(r.extends)} onchange={(e) => setOpt(r, 'extends', list(e.target.value))} placeholder="com.acme.model.AbstractEntity" /></td>
                 <td><input type="text" class="mono" value={r.id || ''} onchange={(e) => setOpt(r, 'id', e.target.value.trim())} placeholder="id, pk ou getKey()" /></td>
                 <td><button class="link" onclick={() => removeIdRule(i)}>Retirer</button></td>
               </tr>

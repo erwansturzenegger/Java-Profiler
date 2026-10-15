@@ -31,7 +31,7 @@ import net.bytebuddy.matcher.ElementMatcher;
 /**
  * Une sonde, définie dans un profil du serveur (server/profiles/*.json) :
  * <pre>
- * { "id": "entity-utils", "handler": "method", "class": ["com.acme.EntityUtils"], "methods": ["initialize*", "reload"],
+ * { "id": "loader", "handler": "method", "class": ["com.acme.EntityLoader"], "methods": ["initialize*", "fetch*"],
  *   "role": "load", "tags": ["init"] }
  * </pre>
  * Classes : {@code class} (globs), {@code extends} (type ou super-type, FQCN), {@code annotated} (FQCN), {@code concrete} ;

@@ -89,7 +89,7 @@
         Pas de SQL ; seules les requêtes HTTP qui la touchent apparaissent. Remplace les entités et types ci-dessous tant qu'il est actif.
       </p>
       <form class="focus-form" onsubmit={(e) => { e.preventDefault(); if (focusEntity.trim()) store.startFocus(focusEntity.trim(), focusId, focusAccess); }}>
-        <input type="text" list="focus-entities" placeholder="Type : Patient, com.acme.Patient" bind:value={focusEntity} class="mono" />
+        <input type="text" list="focus-entities" placeholder="Type : Customer, com.acme.Customer" bind:value={focusEntity} class="mono" />
         <input type="text" placeholder="id (facultatif)" bind:value={focusId} class="mono id" />
         <label class="row"><input type="checkbox" bind:checked={focusAccess} /> accès (getters)</label>
         <button class="primary" type="submit" disabled={!focusEntity.trim()}>{store.focus ? 'Modifier' : 'Démarrer'}</button>
@@ -104,7 +104,7 @@
       <h3>Entités profilées</h3>
       <p class="muted small">
         Filtre appliqué aux LOAD, PROXY, COLLECTION, ACCESS, SESSION et LAZY_ERROR. Les sous-classes sont incluses.
-        Accepte un FQCN, un nom simple (<span class="mono">Patient</span>) ou un glob (<span class="mono">com.acme.model.stay.*</span>).
+        Accepte un FQCN, un nom simple (<span class="mono">Customer</span>) ou un glob (<span class="mono">com.acme.model.order.*</span>).
       </p>
 
       <label class="row">

@@ -22,7 +22,7 @@
   </div>
   <p class="muted small">
     Toutes requêtes confondues. <b class="lazy">Load lazy</b> : chargement implicite (getter, itération) ; <b>Load voulus</b> : requête, find,
-    reload, refresh, initialize… Ctrl+clic ou ↗ pour ouvrir dans un nouvel onglet.
+    find, refresh, initialize… Ctrl+clic ou ↗ pour ouvrir dans un nouvel onglet.
   </p>
   <table class="grid">
     <thead>

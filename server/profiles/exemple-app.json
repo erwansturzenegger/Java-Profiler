@@ -6,7 +6,7 @@
   "settings": {
     "callerPackages": ["com.acme."],
     "entityIds": [
-      { "extends": ["com.acme.framework.BaseEntity"], "id": "id" },
+      { "extends": ["com.acme.model.AbstractEntity"], "id": "id" },
       { "class": ["com.acme.legacy.*"], "id": "getPk()" }
     ]
   },

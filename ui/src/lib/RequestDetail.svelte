@@ -217,7 +217,7 @@
       {:else if tab === 'entities'}
         <table class="grid">
           <thead>
-            <tr><th>Entité</th><th class="num">Load</th><th class="num" title="LOAD lazy implicites">dont lazy</th><th class="num" title="LOAD voulus : requête, find, reload, refresh, initialize…">dont voulus</th><th class="num">Proxy init</th><th class="num">Collection init</th><th class="num">Accès</th><th class="num">Accès lazy</th><th class="num">Lazy exc.</th><th class="num">Instances</th><th class="num">Temps init</th></tr>
+            <tr><th>Entité</th><th class="num">Load</th><th class="num" title="LOAD lazy implicites">dont lazy</th><th class="num" title="LOAD voulus : requête, find, refresh, initialize…">dont voulus</th><th class="num">Proxy init</th><th class="num">Collection init</th><th class="num">Accès</th><th class="num">Accès lazy</th><th class="num">Lazy exc.</th><th class="num">Instances</th><th class="num">Temps init</th></tr>
           </thead>
           <tbody>
             {#each entities as x}

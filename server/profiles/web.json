@@ -1,6 +1,6 @@
 {
   "title": "Servlet / JSF / EL",
-  "description": "Regroupe les événements par requête HTTP (javax et jakarta) et mémorise l'expression EL en cours d'évaluation (#{bean.patient.stays}).",
+  "description": "Regroupe les événements par requête HTTP (javax et jakarta) et mémorise l'expression EL en cours d'évaluation (#{bean.customer.orders}).",
   "enabled": true,
   "appliesTo": ["*"],
   "probes": [

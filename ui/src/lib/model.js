@@ -23,7 +23,7 @@ export function simple(fqcn) {
   return i >= 0 ? fqcn.slice(i + 1) : fqcn;
 }
 
-/** com.acme.web.PatientBean.load:42 -> PatientBean.load:42 */
+/** com.acme.web.CustomerBean.load:42 -> CustomerBean.load:42 */
 export function shortFrame(frame) {
   if (!frame) return '';
   if (frame.startsWith('[')) return frame;
@@ -70,7 +70,7 @@ export function subject(e) {
       return e.info || '';
     case 'UTIL': {
       const call = `${e.label || `${simple(e.entity)}.${e.prop}`}${e.info || ''}`;
-      // Cible absente des arguments (méthode d'instance : patient.reload()) : on l'indique
+      // Cible absente des arguments (méthode d'instance : customer.refetch()) : on l'indique
       return e.tentity && !call.includes(`#${e.teid}`) ? `${simple(e.tentity)}#${e.teid} · ${call}` : call;
     }
     case 'SESSION':
@@ -345,7 +345,7 @@ const real = (inst) => inst && !inst.startsWith('p');
 /**
  * Historique d'une entité (toutes requêtes confondues) avec l'explication des changements d'état.
  * `items` : [{ e, req }]. Les instances (identité JVM) et sessions sont numérotées dans l'ordre d'apparition.
- * Une entité "initialisée" qui redevient lazy est en pratique une autre instance (reload, merge, rechargement
+ * Une entité "initialisée" qui redevient lazy est en pratique une autre instance (findById, merge, rechargement
  * dans une autre session), une instance rafraîchie, ou une instance détachée (clear / evict / close).
  */
 export function entityHistory(items, entity, eid) {
@@ -474,8 +474,8 @@ export function entityHistory(items, entity, eid) {
 /** Genres de cause (champ `cause` des LOAD / PROXY / COLLECTION). `wanted` : chargement voulu par le code. */
 export const CAUSES = {
   lazy: { label: 'Lazy implicite', help: 'Chargement lazy déclenché par un getter ou une itération, sans demande explicite', wanted: false, cls: 't-PROXY' },
-  init: { label: 'Init. demandée', help: 'Initialisation lazy demandée explicitement (EntityUtils.initialize…)', wanted: true, cls: 't-COLLECTION' },
-  explicit: { label: 'Load voulu', help: 'Chargement demandé : reload, load, find, refresh, merge…', wanted: true, cls: 't-UTIL' },
+  init: { label: 'Init. demandée', help: 'Initialisation lazy demandée explicitement (Hibernate.initialize…)', wanted: true, cls: 't-COLLECTION' },
+  explicit: { label: 'Load voulu', help: 'Chargement demandé : find, load, refresh, merge…', wanted: true, cls: 't-UTIL' },
   query: { label: 'Requête', help: 'Hydraté par une requête HQL / JPQL / Criteria / native', wanted: true, cls: 't-SQL' },
   other: { label: 'Autre', help: 'Aucune opération instrumentée englobante (fetch eager, chemin non instrumenté…)', wanted: null, cls: '' },
 };

@@ -252,9 +252,9 @@ final class Reflect {
      * <ul>
      * <li>{@code @|S|<session>} attachée à la session, {@code @|D|<session>} détachée (ou session fermée),
      * {@code @|P|} proxy non initialisé (pas encore d'instance réelle)</li>
-     * <li>{@code stays|C|I|3} collection initialisée (3 éléments), {@code stays|C|L|} collection non initialisée</li>
-     * <li>{@code doctor|R|I|Doctor#5} référence chargée, {@code doctor|R|L|Doctor#5} proxy non initialisé</li>
-     * <li>{@code doctor|N||} null</li>
+     * <li>{@code orders|C|I|3} collection initialisée (3 éléments), {@code orders|C|L|} collection non initialisée</li>
+     * <li>{@code seller|R|I|Seller#5} référence chargée, {@code seller|R|L|Seller#5} proxy non initialisé</li>
+     * <li>{@code seller|N||} null</li>
      * </ul>
      *
      * @param session session connue de l'appelant (plus fiable que la déduction depuis les collections), ou null
@@ -361,7 +361,7 @@ final class Reflect {
             Object id = EntityIds.read(o);
             return simple(entityClassName(c)) + "#" + shortId(id);
         }
-        // Objets "définition" (RelationDefinition...) : leur toString est en général parlant
+        // Objets de métadonnées (descripteurs, définitions...) : leur toString est en général parlant
         try {
             return truncate(String.valueOf(o), 120);
         } catch (Throwable e) {
@@ -418,7 +418,7 @@ final class Reflect {
         return fqcn.substring(dot + 1);
     }
 
-    /** com.acme.Patient.stays -> Patient.stays */
+    /** com.acme.Customer.orders -> Customer.orders */
     static String shortRole(String role) {
         int last = role.lastIndexOf('.');
         int prev = last > 0 ? role.lastIndexOf('.', last - 1) : -1;

@@ -46,7 +46,7 @@
           <tr>
             <th>Id</th>
             <th class="num" title="LOAD lazy implicites (getter, itération)">Load lazy</th>
-            <th class="num" title="LOAD voulus : requête, find, reload, refresh, initialize…">Load voulus</th>
+            <th class="num" title="LOAD voulus : requête, find, refresh, initialize…">Load voulus</th>
             <th class="num" title="Initialisations de proxy / collection">Init.</th>
             <th class="num" title="Getters ayant renvoyé une relation non initialisée">Accès lazy</th>
             <th class="num">Lazy exc.</th>

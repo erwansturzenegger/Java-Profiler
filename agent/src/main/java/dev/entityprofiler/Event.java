@@ -9,8 +9,8 @@ import java.util.List;
  * PROXY, COLLECTION, UTIL, SQL et SESSION sont des "spans" (durée, enfants via {@link #parent}).
  * <p>
  * {@link #inst} et {@link #sess} sont des identités JVM (identityHashCode en hexa) : deux événements sur
- * Patient#12 avec des {@code inst} différents portent sur deux objets Java distincts, ce qui explique qu'une
- * entité initialisée redevienne "lazy" (reload, merge, rechargement dans une autre session...).
+ * Customer#12 avec des {@code inst} différents portent sur deux objets Java distincts, ce qui explique qu'une
+ * entité initialisée redevienne "lazy" (findById, merge, rechargement dans une autre session...).
  */
 final class Event {
     final String type;
@@ -33,31 +33,31 @@ final class Event {
     String teid;
     /** Identité de l'instance d'entité concernée (propriétaire pour COLLECTION, cible pour UTIL / SESSION). */
     String inst;
-    /** Identité de l'instance d'entité retournée (UTIL reload..., SESSION merge), si différente de {@link #inst}. */
+    /** Identité de l'instance d'entité retournée (UTIL findById..., SESSION merge), si différente de {@link #inst}. */
     String rinst;
     /** Identité de la session Hibernate (absente si l'objet est détaché ou si elle n'est pas accessible). */
     String sess;
     /**
      * État de l'instance après l'opération (LOAD, PROXY, COLLECTION, UTIL, SESSION), voir {@link Reflect#snapshot}.
-     * {@link #rsnap} : état de l'instance retournée quand c'en est une autre (reload, merge).
+     * {@link #rsnap} : état de l'instance retournée quand c'en est une autre (findById, merge).
      */
     List<String> snap;
     List<String> rsnap;
     /**
      * LOAD / PROXY / COLLECTION : pourquoi ce chargement, déduit des spans englobants. {@code genre|libellé} :
-     * {@code lazy|Patient.stays} chargement lazy implicite (getter, itération),
-     * {@code init|Utils.initialize › Patient.stays} lazy demandé explicitement (sonde de rôle "load"),
-     * {@code explicit|Patient.reload} ou {@code explicit|session.refresh} chargement demandé,
-     * {@code query|from Patient p where ...} requête HQL / JPQL / Criteria / native,
+     * {@code lazy|Customer.orders} chargement lazy implicite (getter, itération),
+     * {@code init|Hibernate.initialize › Customer.orders} lazy demandé explicitement (sonde de rôle "load"),
+     * {@code explicit|CustomerRepository.findById} ou {@code explicit|session.refresh} chargement demandé,
+     * {@code query|from Customer p where ...} requête HQL / JPQL / Criteria / native,
      * {@code other|} aucun span englobant (chemin non instrumenté).
      */
     String cause;
 
     /** Premier frame applicatif "métier" (packages appelants, hors exclusions), ou [EL]/[JSF] si déclenché par la vue. */
     String caller;
-    /** Premier frame applicatif sans tenir compte des exclusions (ex. BaseEntity.initialize:182). */
+    /** Premier frame applicatif sans tenir compte des exclusions (ex. OrderService.load:182). */
     String inner;
-    /** Méthode appelée juste avant d'entrer dans l'appelant (ex. PersistentSet.iterator, Patient(proxy).getName, Utils.initialize). */
+    /** Méthode appelée juste avant d'entrer dans l'appelant (ex. PersistentSet.iterator, Customer(proxy).getName, Hibernate.initialize). */
     String trigger;
     /** Phase JSF déduite de la pile. */
     String phase;
@@ -77,7 +77,7 @@ final class Event {
     String label;
     /** Tags de la sonde. */
     List<String> tags;
-    /** Tags hérités des spans englobants dont la sonde les propage (ex. tout ce qui se passe sous ImportJob.run). */
+    /** Tags hérités des spans englobants dont la sonde les propage (ex. tout ce qui se passe sous BatchJob.run). */
     List<String> scope;
     /** Non sérialisé : les tags de cet événement s'appliquent à ses enfants. */
     transient boolean propagate;
