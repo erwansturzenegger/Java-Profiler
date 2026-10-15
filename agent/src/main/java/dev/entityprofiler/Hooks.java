@@ -1,4 +1,4 @@
-package ch.tecost.profiler;
+package dev.entityprofiler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,19 +20,19 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public final class Hooks {
 
-    static final String PROXY = "ch.tecost.profiler.proxy";
-    static final String COLLECTION = "ch.tecost.profiler.collection";
-    static final String POST_LOAD = "ch.tecost.profiler.postload";
-    static final String ACCESS = "ch.tecost.profiler.access";
-    static final String UTIL = "ch.tecost.profiler.util";
-    static final String SQL = "ch.tecost.profiler.sql";
-    static final String LAZY_EX = "ch.tecost.profiler.lazyex";
-    static final String REQUEST = "ch.tecost.profiler.request";
-    static final String EL = "ch.tecost.profiler.el";
-    static final String SESSION = "ch.tecost.profiler.session";
-    static final String QUERY = "ch.tecost.profiler.query";
-    static final String LAZY_COLL = "ch.tecost.profiler.lazycoll";
-    static final String EXIT = "ch.tecost.profiler.exit";
+    static final String PROXY = "dev.entityprofiler.proxy";
+    static final String COLLECTION = "dev.entityprofiler.collection";
+    static final String POST_LOAD = "dev.entityprofiler.postload";
+    static final String ACCESS = "dev.entityprofiler.access";
+    static final String UTIL = "dev.entityprofiler.util";
+    static final String SQL = "dev.entityprofiler.sql";
+    static final String LAZY_EX = "dev.entityprofiler.lazyex";
+    static final String REQUEST = "dev.entityprofiler.request";
+    static final String EL = "dev.entityprofiler.el";
+    static final String SESSION = "dev.entityprofiler.session";
+    static final String QUERY = "dev.entityprofiler.query";
+    static final String LAZY_COLL = "dev.entityprofiler.lazycoll";
+    static final String EXIT = "dev.entityprofiler.exit";
 
     private Hooks() {
     }

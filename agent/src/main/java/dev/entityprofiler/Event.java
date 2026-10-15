@@ -1,4 +1,4 @@
-package ch.tecost.profiler;
+package dev.entityprofiler;
 
 import java.util.List;
 

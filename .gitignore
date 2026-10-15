@@ -1,5 +1,11 @@
 node_modules/
 ui/dist/
 agent/target/
+*.jar
 server/config.json
 server/data/
+# Profils propres à une application : restent locaux. Seuls les profils génériques sont versionnés.
+server/profiles/*.json
+!server/profiles/hibernate.json
+!server/profiles/web.json
+!server/profiles/exemple-app.json

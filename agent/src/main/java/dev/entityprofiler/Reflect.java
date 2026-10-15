@@ -1,4 +1,4 @@
-package ch.tecost.profiler;
+package dev.entityprofiler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -418,7 +418,7 @@ final class Reflect {
         return fqcn.substring(dot + 1);
     }
 
-    /** ch.x.Patient.stays -> Patient.stays */
+    /** com.acme.Patient.stays -> Patient.stays */
     static String shortRole(String role) {
         int last = role.lastIndexOf('.');
         int prev = last > 0 ? role.lastIndexOf('.', last - 1) : -1;

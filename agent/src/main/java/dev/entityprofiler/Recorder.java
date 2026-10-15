@@ -1,4 +1,4 @@
-package ch.tecost.profiler;
+package dev.entityprofiler;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -977,7 +977,7 @@ final class Recorder {
         StackTraceElement[] st = new Throwable().getStackTrace();
         Site s = new Site();
         int i = 0;
-        while (i < st.length && (st[i].getClassName().startsWith("ch.tecost.profiler.") || "<init>".equals(st[i].getMethodName())
+        while (i < st.length && (st[i].getClassName().startsWith("dev.entityprofiler.") || "<init>".equals(st[i].getMethodName())
                 && isThrowable(st[i].getClassName())))
             i++;
         i = Math.min(st.length, i + skip);

@@ -1,4 +1,4 @@
-package ch.tecost.profiler;
+package dev.entityprofiler;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
 import static net.bytebuddy.matcher.ElementMatchers.hasSuperType;

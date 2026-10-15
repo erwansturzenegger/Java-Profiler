@@ -1,4 +1,4 @@
-package ch.tecost.profiler;
+package dev.entityprofiler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -220,7 +220,7 @@ final class RuntimeConfig {
     }
 
     private boolean computeApp(String className) {
-        if (className.contains("$HibernateProxy") || className.contains("$$") || className.startsWith("ch.tecost.profiler."))
+        if (className.contains("$HibernateProxy") || className.contains("$$") || className.startsWith("dev.entityprofiler."))
             return false;
         if (callerPackages.isEmpty())
             return !isLibrary(className);

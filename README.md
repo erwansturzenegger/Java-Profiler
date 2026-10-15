@@ -14,8 +14,6 @@ L'agent ne connaît **aucune classe applicative**. Ce qu'il instrumente est déc
                                               server/data/events.db
 ```
 
-![Synthèse d'une requête](docs/synthese.png)
-
 ## Démarrage rapide
 
 ```bash
@@ -45,7 +43,7 @@ Le bouton **JVM…** de l'en-tête liste les JVM locales du serveur (même utili
 
 Pour développer l'UI : `npm run dev` dans `ui/` (port 5173, l'API est proxifiée vers 7070).
 
-Pour voir l'UI sans agent : bouton Importer, puis `docs/sample-events.json`.
+Pour voir l'UI sans agent : bouton Importer, puis `docs/sample-events.json` (application de démonstration : `demo.Patient`, `demo.Stay`, plusieurs threads).
 
 ### Stockage et volumes
 
@@ -70,7 +68,6 @@ Profils fournis :
 | ------------- | -------------------------------------------------------------------------------------------------------------- |
 | `hibernate`   | LOAD, PROXY, COLLECTION, SQL, SESSION, requêtes, LazyInitializationException, getters des entités. Règles de tags `sql-lent` (≥ 100 ms) et `lazy-implicite` |
 | `web`         | Requêtes HTTP (javax / jakarta), expression EL en cours                                                        |
-| `carefolio`   | `EntityUtils` / `EntityBase` (rôle chargement), packages `ch.tecost.sic` / exclusion `ch.tecost.framework.`    |
 | `exemple-app` | Désactivé. Modèle pour une autre application : services mesurés, repositories, batch avec tags propagés       |
 
 ```json
@@ -154,12 +151,12 @@ L'état de l'interface est dans l'URL : les boutons précédent / suivant du nav
 |---|---|
 | `?req=<clé>&tab=tree&ev=<id>` | Une requête, son onglet et l'événement sélectionné |
 | `?view=entities` | Types d'entités : ids, LOAD lazy / voulus, initialisations, exceptions |
-| `?entity=ch.x.Patient` | Un type : ses ids (instances multiples, lazy, exceptions) et ses propriétés |
-| `?entity=ch.x.Patient&id=12` | **Cycle de vie** d'une entité |
+| `?entity=com.acme.Patient` | Un type : ses ids (instances multiples, lazy, exceptions) et ses propriétés |
+| `?entity=com.acme.Patient&id=12` | **Cycle de vie** d'une entité |
 | `?view=measures&tag=batch` | Mesures par tag et par méthode sondée |
 | `?view=profiles&profile=hibernate` | Profils : sondes, règles de tags, réglages |
 | `?view=timeline` | **Chronologie** de tous les événements (filtres `types`, `q`, `agent` ; position `at`, `before`, `after`) |
-| `?view=timeline&entity=ch.x.Patient&id=12&ev=<id>` | Chronologie d'une entité et origine de son état à l'événement `ev` |
+| `?view=timeline&entity=com.acme.Patient&id=12&ev=<id>` | Chronologie d'une entité et origine de son état à l'événement `ev` |
 
 Le cycle de vie liste chaque opération sur l'entité, toutes requêtes confondues : chargement (avec sa cause), initialisation, util, find / refresh / merge / evict / clear, accès lazy, exception. Pour chaque étape, il montre l'instance Java (i1, i2…), son attachement à la session (S1, S2…) et l'état de chaque association **après** l'opération, en mettant en évidence ce qui a changé. Il explique les ruptures : nouvelle instance (reload, merge, rechargement dans une autre session), refresh, détachement avant une `LazyInitializationException`.
 
@@ -180,17 +177,13 @@ Un accès à une entité ou une collection non initialisée apparaît donc toujo
 - en PROXY ou COLLECTION si le chargement lazy réussit ;
 - en LAZY_ERROR (et PROXY en erreur) s'il échoue.
 
-![Arbre d'appels](docs/arbre.png)
-
 ## Configuration dynamique (UI, appliquée en moins d'1 s, sans redémarrage)
 
 - Entités : FQCN, nom simple (`Patient`) ou glob (`com.acme.model.stay.*`), sous-classes incluses. `*` sélectionne tout. L'UI propose la liste des entités connues des agents.
 - Types d'événements activés. ACCESS est désactivé par défaut car très volumineux : activez-le une fois la liste d'entités restreinte.
 - Packages appelants, exclusions, bibliothèques, propriétés ignorées, piles pour ACCESS/LOAD. Valables pour tous les agents ; les profils y ajoutent leurs propres valeurs.
 
-La config est persistée dans `server/config.json`, les profils dans `server/profiles/` (autre dossier : variable `PROFILES_DIR`).
-
-![Choix des entités](docs/config-entites.png)
+La config est persistée dans `server/config.json`, les profils dans `server/profiles/` (autre dossier : variable `PROFILES_DIR`). Seuls les profils génériques (`hibernate`, `web`, `exemple-app`) sont versionnés : les profils propres à une application restent locaux (`.gitignore`).
 
 ### Mode focus : une seule entité
 

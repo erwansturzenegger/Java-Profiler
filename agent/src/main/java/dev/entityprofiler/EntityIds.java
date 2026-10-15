@@ -1,4 +1,4 @@
-package ch.tecost.profiler;
+package dev.entityprofiler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

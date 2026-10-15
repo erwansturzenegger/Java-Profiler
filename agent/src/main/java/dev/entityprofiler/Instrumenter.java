@@ -1,4 +1,4 @@
-package ch.tecost.profiler;
+package dev.entityprofiler;
 
 import static net.bytebuddy.matcher.ElementMatchers.isSynthetic;
 import static net.bytebuddy.matcher.ElementMatchers.nameContains;
@@ -108,7 +108,7 @@ final class Instrumenter {
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                 .with(new Listener(transformed))
                 .ignore(nameStartsWith("net.bytebuddy.")
-                        .or(nameStartsWith("ch.tecost.profiler."))
+                        .or(nameStartsWith("dev.entityprofiler."))
                         .or(nameStartsWith("java."))
                         .or(nameStartsWith("jdk."))
                         .or(nameStartsWith("sun."))
