@@ -1,0 +1,98 @@
+{
+  "title": "Hibernate / JPA",
+  "description": "Chargements (LOAD), proxies et collections lazy, SQL, opérations de session, requêtes, LazyInitializationException, getters des entités. Hibernate 5 et 6, javax et jakarta.",
+  "enabled": true,
+  "appliesTo": ["*"],
+  "settings": {
+    "accessExclude": ["id"]
+  },
+  "probes": [
+    {
+      "id": "proxy-init",
+      "handler": "proxy-init",
+      "description": "Proxy non initialisé accédé : chargement lazy",
+      "class": ["org.hibernate.proxy.AbstractLazyInitializer"],
+      "methods": ["initialize"],
+      "args": 0,
+      "tags": ["hibernate"]
+    },
+    {
+      "id": "collection-init",
+      "handler": "collection-init",
+      "description": "Collection lazy initialisée",
+      "class": ["org.hibernate.event.internal.DefaultInitializeCollectionEventListener"],
+      "methods": ["onInitializeCollection"],
+      "args": 1,
+      "tags": ["hibernate"]
+    },
+    {
+      "id": "post-load",
+      "handler": "post-load",
+      "description": "Chaque entité hydratée (requête, find, proxy, collection, fetch join...)",
+      "class": ["org.hibernate.event.internal.DefaultPostLoadEventListener"],
+      "methods": ["onPostLoad"],
+      "args": 1,
+      "tags": ["hibernate"]
+    },
+    {
+      "id": "sql",
+      "handler": "sql",
+      "description": "Exécution SQL",
+      "class": ["org.hibernate.engine.jdbc.internal.ResultSetReturnImpl"],
+      "methods": ["extract", "execute", "executeUpdate"],
+      "public": true,
+      "minArgs": 1,
+      "tags": ["sql"]
+    },
+    {
+      "id": "session",
+      "handler": "session",
+      "description": "find / get / refresh / merge (chargements voulus), getReference / load (proxy), persist / save / update / lock (attachement), remove / delete, evict / detach / clear / close (détachement)",
+      "class": ["org.hibernate.internal.SessionImpl"],
+      "methods": ["clear", "evict", "detach", "close", "refresh", "merge", "find", "get", "getReference", "load", "persist", "save", "saveOrUpdate", "update", "lock", "remove", "delete"],
+      "public": true,
+      "static": false,
+      "tags": ["hibernate"]
+    },
+    {
+      "id": "query",
+      "handler": "query",
+      "description": "Requêtes HQL / JPQL / Criteria / natives (Hibernate 6, puis 5.2+) : cause des LOAD hydratés",
+      "class": ["org.hibernate.query.spi.AbstractSelectionQuery", "org.hibernate.query.internal.AbstractProducedQuery"],
+      "methods": ["list"],
+      "args": 0,
+      "tags": ["hibernate"]
+    },
+    {
+      "id": "lazy-collection",
+      "handler": "lazy-collection",
+      "description": "Collection en échec : entité, id et instance de la LazyInitializationException qui suit",
+      "class": ["org.hibernate.collection.spi.AbstractPersistentCollection", "org.hibernate.collection.internal.AbstractPersistentCollection"],
+      "methods": ["throwLazyInitializationException"]
+    },
+    {
+      "id": "lazy-exception",
+      "handler": "lazy-exception",
+      "description": "LazyInitializationException et ses sous-classes",
+      "class": ["*Lazy*"],
+      "extends": ["org.hibernate.LazyInitializationException"],
+      "methods": ["<init>"],
+      "tags": ["hibernate"]
+    },
+    {
+      "id": "entity-getters",
+      "handler": "getter",
+      "description": "Getters des entités (événements ACCESS, désactivés par défaut dans la configuration)",
+      "annotated": ["jakarta.persistence.Entity", "javax.persistence.Entity", "jakarta.persistence.MappedSuperclass", "javax.persistence.MappedSuperclass"],
+      "methods": ["get*", "is*"],
+      "args": 0,
+      "public": true,
+      "static": false,
+      "nonVoid": true
+    }
+  ],
+  "tagRules": [
+    { "tag": "sql-lent", "types": ["SQL"], "minDur": 100 },
+    { "tag": "lazy-implicite", "types": ["LOAD", "PROXY", "COLLECTION"], "cause": "lazy" }
+  ]
+}

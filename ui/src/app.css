@@ -1,0 +1,249 @@
+:root {
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --panel-2: #f0f2f5;
+  --border: #dfe3e8;
+  --text: #1c2129;
+  --muted: #687384;
+  --faint: #9aa4b2;
+  --accent: #d97706;
+  --sel: #fff4e0;
+  --sel-border: #f0b45a;
+  --app-frame: #0b6bcb;
+
+  --t-load: #2f6fde;
+  --t-proxy: #d97706;
+  --t-collection: #8b4fd8;
+  --t-access: #6b7686;
+  --t-util: #128a5c;
+  --t-sql: #0f8a95;
+  --t-lazy: #d93636;
+  --t-req: #445063;
+  --t-session: #a2507a;
+  --tag: #4a5bbd;
+  --tag-bg: #eef0fb;
+
+  --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111418;
+    --panel: #181c22;
+    --panel-2: #20252d;
+    --border: #2c333d;
+    --text: #e3e7ed;
+    --muted: #8d97a5;
+    --faint: #5f6977;
+    --accent: #f5a524;
+    --sel: #2d2416;
+    --sel-border: #8a6020;
+    --app-frame: #5aa9ff;
+
+    --t-load: #5b8ff0;
+    --t-proxy: #f5a524;
+    --t-collection: #b083f0;
+    --t-access: #8d97a5;
+    --t-util: #34c38f;
+    --t-sql: #2fb7c2;
+    --t-lazy: #f26060;
+    --t-req: #9aa4b2;
+    --t-session: #e07fb0;
+    --tag: #a5b1f5;
+    --tag-bg: #232842;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.45 var(--sans);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+button:hover {
+  border-color: var(--muted);
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #111;
+  font-weight: 600;
+}
+
+input[type='text'],
+input[type='search'],
+textarea {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 8px;
+  width: 100%;
+}
+
+input:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 2px solid var(--sel-border);
+  outline-offset: -1px;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.faint {
+  color: var(--faint);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font: 600 11px/1 var(--mono);
+  padding: 3px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  color: var(--c, var(--muted));
+  background: color-mix(in srgb, var(--c, var(--muted)) 13%, transparent);
+}
+
+.t-LOAD { --c: var(--t-load); }
+.t-PROXY { --c: var(--t-proxy); }
+.t-COLLECTION { --c: var(--t-collection); }
+.t-ACCESS { --c: var(--t-access); }
+.t-UTIL { --c: var(--t-util); }
+.t-SQL { --c: var(--t-sql); }
+.t-LAZY_ERROR { --c: var(--t-lazy); }
+.t-REQ { --c: var(--t-req); }
+.t-SESSION { --c: var(--t-session); }
+
+a.lnk {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.lnk:hover {
+  text-decoration: underline;
+}
+
+/* Tags des mesures : pleins = propres à l'événement, pointillés = hérités d'un span englobant */
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 16px;
+  padding: 0 5px;
+  margin-left: 4px;
+  border-radius: 8px;
+  color: var(--tag);
+  background: var(--tag-bg);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.tag.inherited {
+  background: none;
+  border: 1px dashed var(--tag);
+}
+
+a.lnk.tag:hover {
+  text-decoration: none;
+  border-color: var(--tag);
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.grid th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  z-index: 1;
+}
+
+table.grid td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+table.grid td.num,
+table.grid th.num {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+table.grid tr.clickable {
+  cursor: pointer;
+}
+
+table.grid tr.clickable:hover td {
+  background: var(--panel-2);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 5px;
+}
+
+.via {
+  margin-left: 6px;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

@@ -1,0 +1,36 @@
+{
+  "title": "Servlet / JSF / EL",
+  "description": "Regroupe les événements par requête HTTP (javax et jakarta) et mémorise l'expression EL en cours d'évaluation (#{bean.patient.stays}).",
+  "enabled": true,
+  "appliesTo": ["*"],
+  "probes": [
+    {
+      "id": "http-request",
+      "handler": "http-request",
+      "description": "HttpServlet#service(request, response)",
+      "class": ["jakarta.servlet.http.HttpServlet", "javax.servlet.http.HttpServlet"],
+      "methods": ["service"],
+      "params": ["jakarta.servlet.ServletRequest|javax.servlet.ServletRequest", "*"]
+    },
+    {
+      "id": "el-value",
+      "handler": "el",
+      "description": "ValueExpression#getValue",
+      "class": ["*Expression*"],
+      "concrete": true,
+      "extends": ["jakarta.el.ValueExpression", "javax.el.ValueExpression"],
+      "methods": ["getValue"],
+      "args": 1
+    },
+    {
+      "id": "el-method",
+      "handler": "el",
+      "description": "MethodExpression#invoke",
+      "class": ["*Expression*"],
+      "concrete": true,
+      "extends": ["jakarta.el.MethodExpression", "javax.el.MethodExpression"],
+      "methods": ["invoke"],
+      "args": 2
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "title": "Exemple : application quelconque",
+  "description": "Modèle à copier pour une autre application. Désactivé. Mesure les services, rend « voulus » les chargements des repositories, et tague tout ce qui se passe pendant un batch.",
+  "enabled": false,
+  "appliesTo": ["mon-app*"],
+  "settings": {
+    "callerPackages": ["com.acme."],
+    "entityIds": [
+      { "extends": ["com.acme.framework.BaseEntity"], "id": "id" },
+      { "class": ["com.acme.legacy.*"], "id": "getPk()" }
+    ]
+  },
+  "probes": [
+    {
+      "id": "services",
+      "handler": "method",
+      "description": "Durée des méthodes publiques des services",
+      "class": ["com.acme.*Service", "com.acme.*ServiceImpl"],
+      "public": true,
+      "role": "measure",
+      "tags": ["service"]
+    },
+    {
+      "id": "repositories",
+      "handler": "method",
+      "description": "Chargements demandés",
+      "class": ["com.acme.*Repository"],
+      "methods": ["find*", "load*", "get*"],
+      "role": "load",
+      "tags": ["repository"]
+    },
+    {
+      "id": "batch",
+      "handler": "method",
+      "label": "Batch",
+      "description": "Tout ce qui se passe pendant un batch porte le tag « batch »",
+      "extends": ["java.lang.Runnable"],
+      "class": ["com.acme.batch.*"],
+      "methods": ["run"],
+      "tags": ["batch"],
+      "propagate": true
+    }
+  ],
+  "tagRules": [
+    { "tag": "lent", "types": ["UTIL"], "probe": "exemple-app/services", "minDur": 500 }
+  ]
+}
